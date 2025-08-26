@@ -1,0 +1,38 @@
+[project]
+name = "rag-poc"
+version = "0.1.0"
+description = "LlamaIndex + Milvus RAG service using Ollama and Open WebUI"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "llama-index-core>=0.11.0",
+  "llama-index-llms-ollama>=0.2.0",
+  "llama-index-embeddings-ollama>=0.2.0",
+  "llama-index-vector-stores-milvus>=0.2.0",
+  "pymilvus>=2.4.7",
+  "fastapi>=0.112.0",
+  "uvicorn[standard]>=0.30.0",
+  "pydantic>=2.8.2",
+  "python-dotenv>=1.0.1",
+  "pyyaml>=6.0.1",
+  "typer>=0.12.3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.5.6",
+  "black>=24.8.0",
+  "pytest>=8.3.2",
+  "pytest-cov>=5.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

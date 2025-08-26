@@ -1,0 +1,22 @@
+# Default local configuration for RAG service
+llm_model: "qwen3:4b"
+embed_model: "nomic-embed-text"
+ollama_base_url: "http://localhost:11434"
+
+milvus:
+  host: "localhost"
+  port: 19530
+  collection: "rag_docs"
+  dim: 768  # match your embedding model (e.g., 768 for nomic-embed-text)
+
+ingest:
+  data_dir: "data"
+  chunk_size: 1024
+  chunk_overlap: 100
+
+query:
+  top_k: 5
+
+# Optional timeouts (seconds)
+llm_timeout: 120
+embed_timeout: 60
