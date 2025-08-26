@@ -14,7 +14,7 @@ from .llm import get_llm, get_embed_model  # fallback
 from .vector import get_vector_store
 
 
-def ingest(settings: Settings) -> Dict[str, int]:
+async def ingest(settings: Settings) -> Dict[str, int]:
     docs = SimpleDirectoryReader(settings.data_dir, recursive=True).load_data()
     splitter = SentenceSplitter(
         chunk_size=settings.chunk_size, chunk_overlap=settings.chunk_overlap
@@ -34,7 +34,7 @@ def ingest(settings: Settings) -> Dict[str, int]:
     return {"documents": len(docs)}
 
 
-def query(settings: Settings, question: str, top_k: int | None = None) -> Dict:
+async def query(settings: Settings, question: str, top_k: int | None = None) -> Dict:
     vector_store = get_vector_store(settings)
     embed_model = get_embed_model(settings)
     llm = get_llm(settings)
@@ -44,7 +44,7 @@ def query(settings: Settings, question: str, top_k: int | None = None) -> Dict:
         embed_model=embed_model,
     )
     qe = index.as_query_engine(llm=llm, similarity_top_k=top_k or settings.top_k)
-    resp = qe.query(question)
+    resp = await qe.aquery(question)
 
     sources: List[Dict] = []
     for sn in getattr(resp, "source_nodes", []) or []:

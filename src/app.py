@@ -39,24 +39,24 @@ class QueryRequest(BaseModel):
     config: Optional[str] = None
 
 
-@app.get("/health")
-def health() -> dict:
+@app.get("/health", operation_id="rag_health", tags=["tools"])
+async def health() -> dict:
     return {"status": "ok"}
 
 
-@app.post("/ingest")
-def ingest(req: IngestRequest) -> dict:
+@app.post("/ingest", operation_id="rag_ingest", tags=["tools"])
+async def ingest(req: IngestRequest) -> dict:
     logging.getLogger("rag.api").info("/ingest called config=%s", req.config)
     settings = load_settings(req.config)
-    return ingest_pipeline(settings)
+    return await ingest_pipeline(settings)
 
 
-@app.post("/query")
-def query(req: QueryRequest) -> dict:
+@app.post("/query", operation_id="rag_query", tags=["tools"])
+async def query(req: QueryRequest) -> dict:
     logging.getLogger("rag.api").info(
         "/query called top_k=%s text=%r",
         req.top_k,
         (req.question[:80] + ("…" if len(req.question) > 80 else "")),
     )
     settings = load_settings(req.config)
-    return query_pipeline(settings, req.question, req.top_k)
+    return await query_pipeline(settings, req.question, req.top_k)
