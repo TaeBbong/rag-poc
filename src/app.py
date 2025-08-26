@@ -9,7 +9,8 @@ from pydantic import BaseModel
 
 from rag_poc.config import load_settings
 from rag_poc.logging_utils import configure_logging
-from rag_poc.pipeline import ingest as ingest_pipeline, query as query_pipeline
+# from rag_poc.pipeline import ingest as ingest_pipeline, query as query_pipeline
+from rag_poc.pipeline import ingest as ingest_pipeline, query_sources_only as query_pipeline
 
 
 app = FastAPI(title="RAG POC", version="0.1.0")

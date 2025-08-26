@@ -57,3 +57,31 @@ async def query(settings: Settings, question: str, top_k: int | None = None) -> 
         )
 
     return {"answer": str(resp), "sources": sources}
+
+
+async def query_sources_only(
+    settings: Settings, question: str, top_k: int | None = None
+) -> Dict:
+    vector_store = get_vector_store(settings)
+    embed_model = get_embed_model(settings)
+
+    index = VectorStoreIndex.from_vector_store(
+        vector_store=vector_store,
+        embed_model=embed_model,
+    )
+
+    retriever = index.as_retriever(similarity_top_k=top_k or settings.top_k)
+    nodes = await retriever.aretrieve(question)
+
+    sources: List[Dict] = []
+    for nws in nodes:
+        node = getattr(nws, "node", nws)
+        sources.append(
+            {
+                "text": node.get_text(),
+                "score": getattr(nws, "score", None),
+                "metadata": node.metadata or {},
+            }
+        )
+
+    return {"question": question, "sources": sources}
